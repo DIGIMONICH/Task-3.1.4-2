@@ -1,40 +1,112 @@
 package com.preproject.model;
 
-
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.Set;
 
 @Entity
-@Table(name = "user")
-public class User {
-
+@Table(name = "users")
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id")
+    private int id;
 
     @Column(name = "name")
     private String name;
+    @Column(name = "lastname")
+    private String lastname;
 
-    @Column(name = "last_name")
-    private String lastName;
+    @Column
+    private String userName;
 
-    @Column(name = "email")
-    private String email;
+    @Column
+    private String password;
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    private Set<Role> roles;
 
-    public User() {}
-
-    public User(String firstName, String lastName, String email) {
-        this.name = firstName;
-        this.lastName = lastName;
-        this.email = email;
+    public User(){}
+    public User(String name, String lastname, String userName, String password, Set<Role> roles) {
+        this.name = name;
+        this.lastname = lastname;
+        this.userName = userName;
+        this.password = password;
+        this.roles = roles;
     }
 
-    public Long getId() {
+    public User(int id, String name, String lastname, String userName, String password, Set<Role> roles) {
+        this.id = id;
+        this.name = name;
+        this.lastname = lastname;
+        this.userName = userName;
+        this.password = password;
+        this.roles = roles;
+    }
+
+
+    public String getRolesName() {
+        StringBuilder str = new StringBuilder();
+        for (Role r: roles) {
+            str.append(r.getName())
+                    .append(" ");
+        }
+        return str.toString();
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return userName;
+    }
+
+
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public String printSet(Set<Role> roles) {
+        String result = "";
+        for(Role el: roles){
+            result += el.toString() + " ";
+        }
+        return result;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -46,20 +118,31 @@ public class User {
         this.name = name;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
-
-    public String getEmail() {
-        return email;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

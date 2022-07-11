@@ -1,58 +1,27 @@
 package com.preproject.controller;
 
-
-import com.preproject.model.User;
+import com.preproject.service.RoleService;
 import com.preproject.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.List;
+import java.security.Principal;
 
 @Controller
-@RequestMapping("/users")
 public class UserController {
 
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private RoleService roleService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
-    @GetMapping( "/")
-    public String showAllUsers (Model model ) {
-        List<User> allUsers = userService.getAllUsers();
-        model.addAttribute("allUsers", allUsers);
-        return "start";
-    }
-    @PostMapping("/update")
-    public String update(@ModelAttribute("user") User user) {
-        userService.updateUser(user);
-        return "redirect:/users/";
-    }
-
-    @GetMapping("/addNewUser")
-    public String addNewUser(Model model) {
-        model.addAttribute("user", new User());
-        return "addPage";
-    }
-    @PostMapping("/saveUser")
-    public String saveUser(@ModelAttribute("user") User user) {
-        userService.createUser(user);
-        return "redirect:/users/";
-    }
-    @GetMapping("/updateUser")
-    public String updateUser(@RequestParam(value = "id") long id, Model model) {
-
-        model.addAttribute("user", userService.readUser(id));
-        return "editPage";
-    }
-
-    @GetMapping("/deleteUser")
-    public String deleteUser(@RequestParam(value = "id") long id) {
-        userService.deleteUser(id);
-
-        return "redirect:/users/";
+    @GetMapping("/users")
+    public String index(Model model, Principal principal) {
+        model.addAttribute("user", userService.getByUserName(principal.getName()));
+        model.addAttribute("roles", roleService.getAllRole());
+        return "/user/index";
     }
 
 }
