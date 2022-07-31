@@ -21,7 +21,10 @@ public class User implements UserDetails {
     private String lastname;
 
     @Column
-    private String userName;
+    private byte age;
+
+    @Column(unique = true)
+    private String mail;
 
     @Column
     private String password;
@@ -30,19 +33,21 @@ public class User implements UserDetails {
     private Set<Role> roles;
 
     public User(){}
-    public User(String name, String lastname, String userName, String password, Set<Role> roles) {
+    public User(String name, String lastname, byte age, String mail,String password, Set<Role> roles) {
         this.name = name;
         this.lastname = lastname;
-        this.userName = userName;
+        this.age = age;
         this.password = password;
         this.roles = roles;
+        this.mail = mail;
     }
 
-    public User(int id, String name, String lastname, String userName, String password, Set<Role> roles) {
+    public User(int id, String name, String lastname, byte age, String mail, String password, Set<Role> roles) {
         this.id = id;
         this.name = name;
         this.lastname = lastname;
-        this.userName = userName;
+        this.age = age;
+        this.mail = mail;
         this.password = password;
         this.roles = roles;
     }
@@ -69,7 +74,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userName;
+        return mail;
     }
 
 
@@ -134,15 +139,24 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public byte getAge() {
+        return age;
+    }
+
+    public void setAge(byte age) {
+        this.age = age;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 }
