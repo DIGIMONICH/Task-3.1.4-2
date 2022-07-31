@@ -12,7 +12,4 @@ public class AdminController {
     public String getAllUser(){
         return "admin/users";
     }
-
-
-
 }
