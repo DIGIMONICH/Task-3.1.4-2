@@ -1,11 +1,10 @@
 package com.preproject.repository;
 
 import com.preproject.model.User;
-
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-
-public interface UserRepository extends JpaRepository<User,Integer> {
-    User findByMail(String mail);
-    User findUserById(int id);
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    User findUserByEmail(String email);
 }

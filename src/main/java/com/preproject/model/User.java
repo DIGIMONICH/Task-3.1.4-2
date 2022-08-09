@@ -1,65 +1,94 @@
 package com.preproject.model;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
+    private long id;
 
-    @Column(name = "name")
-    private String name;
-    @Column(name = "lastname")
-    private String lastname;
+    @Column(unique = true, nullable = false, name = "email")
+    private String email;
 
-    @Column
-    private byte age;
-
-    @Column(unique = true)
-    private String mail;
-
-    @Column
+    @Column(name = "password")
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "age")
+    private int age;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
-    public User(){}
-    public User(String name, String lastname, byte age, String mail,String password, Set<Role> roles) {
-        this.name = name;
-        this.lastname = lastname;
-        this.age = age;
-        this.password = password;
-        this.roles = roles;
-        this.mail = mail;
+    public User() {
     }
 
-    public User(int id, String name, String lastname, byte age, String mail, String password, Set<Role> roles) {
+    public User(String email, String password, String firstName, int age, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.email = email;
+        this.password = password;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
         this.id = id;
-        this.name = name;
-        this.lastname = lastname;
-        this.age = age;
-        this.mail = mail;
-        this.password = password;
-        this.roles = roles;
     }
 
+    public String getEmail() {
+        return email;
+    }
 
-    public String getRolesName() {
-        StringBuilder str = new StringBuilder();
-        for (Role r: roles) {
-            str.append(r.getName())
-                    .append(" ");
-        }
-        return str.toString();
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     @Override
@@ -74,10 +103,8 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return mail;
+        return getEmail();
     }
-
-
 
     @Override
     public boolean isAccountNonExpired() {
@@ -99,64 +126,18 @@ public class User implements UserDetails {
         return true;
     }
 
-    public String printSet(Set<Role> roles) {
-        String result = "";
-        for(Role el: roles){
-            result += el.toString() + " ";
-        }
-        return result;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public byte getAge() {
-        return age;
+    public Set<Role> getRoles() {
+        if (roles == null) {
+            roles = new HashSet<>();
+        }
+        return roles;
     }
 
-    public void setAge(byte age) {
-        this.age = age;
-    }
-
-    public String getMail() {
-        return mail;
-    }
-
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setRoles(Set<Role> roleSet) {
+        this.roles = roleSet;
     }
 }
