@@ -1,27 +1,23 @@
 package com.preproject.service;
 
-import com.preproject.model.User;
 
+import com.preproject.models.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
-public interface UserService {
-
-    void addUser(User user);
-
-    void updateUser(User user);
-
-    void deleteUserById(long id);
-
-    User getUserById(long id);
-
+public interface UserService extends UserDetailsService {
     List<User> getAllUsers();
 
-    User getUserByUsername(String username);
+    User getUserById(int id);
 
-    User getUserByEmail(String email);
+    void saveUser(User user);
 
-    boolean existsUserById(long id);
+    User saveUser(User user, String[] roles);
 
-    void saveUser(User newUser);
+    void updateUser(User updatedUser);
+
+    User updateUser(User updatedUser, String[] roles);
+
+    void delete(int id);
 }

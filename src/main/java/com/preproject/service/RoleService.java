@@ -1,19 +1,11 @@
 package com.preproject.service;
 
-import com.preproject.model.Role;
+import com.preproject.models.Role;
 
-
-import java.util.List;
+import java.util.Set;
 
 public interface RoleService {
+    Role getOrCreateRole(String name);
 
-    void addRole(Role role);
-
-    void updateRole(Role role);
-
-    void removeRoleById(long id);
-
-    List<Role> getAllRoles();
-
-    Role getRoleByName(String name);
+    Set<Role> getRoles();
 }

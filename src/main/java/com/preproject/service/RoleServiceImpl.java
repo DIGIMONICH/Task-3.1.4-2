@@ -1,46 +1,30 @@
 package com.preproject.service;
 
-import com.preproject.model.Role;
-import com.preproject.repository.RoleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import com.preproject.dao.RoleDao;
+import com.preproject.models.Role;
 import org.springframework.stereotype.Service;
 
-
-import java.util.List;
+import javax.transaction.Transactional;
+import java.util.Set;
 
 @Service
 public class RoleServiceImpl implements RoleService {
 
-    private RoleRepository roleRepository;
+    private final RoleDao roleDao;
 
-    @Autowired
-    public void setRoleRepository(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
+    public RoleServiceImpl(RoleDao roleDao) {
+        this.roleDao = roleDao;
     }
 
     @Override
-    public void addRole(Role role) {
-        roleRepository.save(role);
+    @Transactional
+    public Role getOrCreateRole(String name) {
+        return roleDao.getOrCreateRole(name);
     }
 
     @Override
-    public void updateRole(Role role) {
-        roleRepository.save(role);
-    }
-
-    @Override
-    public void removeRoleById(long id) {
-        roleRepository.deleteById(id);
-    }
-
-    @Override
-    public List<Role> getAllRoles() {
-        return roleRepository.findAll();
-    }
-
-    @Override
-    public Role getRoleByName(String name) {
-        return roleRepository.findByName(name);
+    public Set<Role> getRoles() {
+        return roleDao.getRoles();
     }
 }
-
